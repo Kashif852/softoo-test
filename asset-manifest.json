@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/softoo-test/static/css/main.236ef789.chunk.css",
+    "main.js": "/softoo-test/static/js/main.eaa222a0.chunk.js",
+    "main.js.map": "/softoo-test/static/js/main.eaa222a0.chunk.js.map",
+    "runtime-main.js": "/softoo-test/static/js/runtime-main.b2716c69.js",
+    "runtime-main.js.map": "/softoo-test/static/js/runtime-main.b2716c69.js.map",
+    "static/js/2.8ecc9f83.chunk.js": "/softoo-test/static/js/2.8ecc9f83.chunk.js",
+    "static/js/2.8ecc9f83.chunk.js.map": "/softoo-test/static/js/2.8ecc9f83.chunk.js.map",
+    "index.html": "/softoo-test/index.html",
+    "precache-manifest.f09b7df4cfb7db4f39bc3b6e401b3c76.js": "/softoo-test/precache-manifest.f09b7df4cfb7db4f39bc3b6e401b3c76.js",
+    "service-worker.js": "/softoo-test/service-worker.js",
+    "static/css/main.236ef789.chunk.css.map": "/softoo-test/static/css/main.236ef789.chunk.css.map",
+    "static/js/2.8ecc9f83.chunk.js.LICENSE.txt": "/softoo-test/static/js/2.8ecc9f83.chunk.js.LICENSE.txt",
+    "static/media/bars-solid.svg": "/softoo-test/static/media/bars-solid.b3f49afd.svg",
+    "static/media/shopping-cart-solid.svg": "/softoo-test/static/media/shopping-cart-solid.8bf1af37.svg",
+    "static/media/times-solid.svg": "/softoo-test/static/media/times-solid.2c5552a1.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.b2716c69.js",
+    "static/js/2.8ecc9f83.chunk.js",
+    "static/css/main.236ef789.chunk.css",
+    "static/js/main.eaa222a0.chunk.js"
+  ]
+}
