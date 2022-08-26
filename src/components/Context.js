@@ -1,143 +1,90 @@
-import React, { Component } from 'react'
-import axios from "axios"
-
+import React, { useReducer } from 'react'
 export const DataContext = React.createContext();
 
-export class DataProvider extends Component {
+const switchData = (data, action) => {
+    switch (action?.type) {
+        case "addCart":
+            const check = data.cart.every(item =>{
+                return item._id !== action.id
+            })
+            if(check){
+                const d = data.products.filter(product =>{
+                    return product._id === action.id
+                })
+                return({...data,cart: [...data.cart,...d]})
+            }else{
+                return data
+            }
+        case "filterOnColor":
+            let selectedColor = []
+            if(action.color!=="All"){
+            data.allProducts.forEach((product)=>{
+                if(product.colors === action.color){
+                    selectedColor.push(product)
+                }
+            })
+            }else{
+                selectedColor = data.allProducts;
+            }
+            return ({...data,products: selectedColor})
+        case "reduction":
+            const reductionCard = data.cart
+            reductionCard.forEach(item =>{
+                if(item._id === action.id){
+                    item.count === 1 ? item.count = 1 : item.count -=1;
+                }
+            })
+            // getTotal();
+            return({...data,cart: reductionCard});
+        
+        case "increase":
+            const increaseCart = data.cart
+            increaseCart.forEach(item =>{
+                if(item._id === action.id){
+                    item.count = item.count + 1;
+                }
+            })
+            
+            return({...data,cart: increaseCart});
+            
+        case "removeProduct":
+            const removeProductCart = data.cart
+            removeProductCart.forEach((item, index) =>{
+                if(item._id === action.id){
+                    removeProductCart.splice(index, 1)
+                }
+            })
+            // this.getTotal();
+            return({...data,cart: removeProductCart});
+        case "updateData":
+            return action.data;
 
-    state = {
+        case "getTotal":
+            const getTotalCart= data.cart;
+            const res = getTotalCart.reduce((prev, item) => {
+                return prev + (item.price * item.count);
+            },0)
+            return ({...data, total: res})
+        default:
+            return data;
+    }
+}
+
+function DataProvider(props) {
+    const [data, setData] = useReducer(switchData,{
         products: [],
         cart: [],
         colors: [],
         allProducts: [],
         total: 0
-    };
-
-    addCart = (id) =>{
-        const {products, cart} = this.state;
-        const check = cart.every(item =>{
-            return item._id !== id
-        })
-        if(check){
-            const data = products.filter(product =>{
-                return product._id === id
-            })
-            this.setState({cart: [...cart,...data]})
-        }else{
-            alert("The product has been added to cart.")
-        }
-    };
-
-    filterOnColor = (color) =>{
-        if(color!=="All"){
-            let temp = []
-        this.state.allProducts.forEach((product)=>{
-            if(product.colors === color){
-                temp.push(product)
-            }
-        })
-        this.setState({products: temp})
-        }else{
-            const temp = this.state.allProducts;
-            this.setState({products: temp})
-        }
-    };
-
-    reduction = id =>{
-        const { cart } = this.state;
-        cart.forEach(item =>{
-            if(item._id === id){
-                item.count === 1 ? item.count = 1 : item.count -=1;
-            }
-        })
-        this.setState({cart: cart});
-        this.getTotal();
-    };
-
-    increase = id =>{
-        const { cart } = this.state;
-        cart.forEach(item =>{
-            if(item._id === id){
-                item.count += 1;
-            }
-        })
-        this.setState({cart: cart});
-        this.getTotal();
-    };
-
-    removeProduct = id =>{
-        if(window.confirm("Do you want to delete this product?")){
-            const {cart} = this.state;
-            cart.forEach((item, index) =>{
-                if(item._id === id){
-                    cart.splice(index, 1)
-                }
-            })
-            this.setState({cart: cart});
-            this.getTotal();
-        }
-       
-    };
-
-    getTotal = ()=>{
-        const{cart} = this.state;
-        const res = cart.reduce((prev, item) => {
-            return prev + (item.price * item.count);
-        },0)
-        this.setState({total: res})
-    };
-    
-    componentDidUpdate(){
-        localStorage.setItem('dataCart', JSON.stringify(this.state.cart))
-        localStorage.setItem('dataTotal', JSON.stringify(this.state.total))
-    };
-
-    componentDidMount(){
-        axios.get("https://my-json-server.typicode.com/benirvingplt/products/products")
-        .then(res => {
-            const temp1 = res.data.map(item=>{
-                return {
-                    "_id": item.id,
-                    "title": item.name,
-                    "src": item.img,
-                    "description": item.name+" Description",
-                    "content": item.name+" Content",
-                    "price": item.price,
-                    "colors": item.colour,
-                    "count": 5
-                }
-            })
-
-            const temp2 = res.data.map(item=>{
-                return {"colors": item.colour}
-            })
-            this.setState({products: temp1})
-            this.setState({allProducts: temp1})
-            this.setState({colors: temp2})
-        })
-        .catch(err => alert(JSON.stringify(err)))
-        // alert("Component Did mount")
-        const dataCart = JSON.parse(localStorage.getItem('dataCart'));
-        if(dataCart !== null){
-            this.setState({cart: dataCart});
-        }
-        const dataTotal = JSON.parse(localStorage.getItem('dataTotal'));
-        if(dataTotal !== null){
-            this.setState({total: dataTotal});
-        }
-    }
-   
-
-    render() {
-        const {products, cart,total, colors} = this.state;
-        const {addCart,reduction,increase,removeProduct,getTotal, filterOnColor} = this;
-        return (
-            <DataContext.Provider 
-            value={{products, colors,addCart, cart, reduction,increase,removeProduct,total,getTotal, filterOnColor}}>
-                {this.props.children}
-            </DataContext.Provider>
-        )
-    }
+    })
+    return (
+        <DataContext.Provider value={{data, setData}}>
+            {props.children}
+        </DataContext.Provider>
+    )
 }
+
+export default DataProvider
 
 
